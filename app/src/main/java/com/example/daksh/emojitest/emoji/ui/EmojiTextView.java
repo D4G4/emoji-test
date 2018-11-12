@@ -46,6 +46,7 @@ import com.example.daksh.emojitest.emoji.baseRequirements.EmojiManager;
     setText(getText());
   }
 
+  //Replace the emoji input by your custom emoji.
   @Override public void setText(CharSequence rawText, BufferType type) {
     final CharSequence text = rawText == null ? "" : rawText;
     final SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(text);
