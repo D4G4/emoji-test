@@ -1,5 +1,6 @@
 package com.example.daksh.emojitest.emoji;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.support.annotation.ColorInt;
@@ -20,6 +21,7 @@ import com.example.daksh.emojitest.emoji.baseRequirements.EmojiManager;
 import com.example.daksh.emojitest.emoji.listeners.OnEmojiBackspaceClickListener;
 import com.example.daksh.emojitest.emoji.listeners.OnEmojiClickListener;
 import com.example.daksh.emojitest.emoji.listeners.OnEmojiLongClickListener;
+import com.example.daksh.emojitest.emoji.listeners.RepeatListener;
 import com.example.daksh.emojitest.emoji.recent.RecentEmoji;
 import com.example.daksh.emojitest.emoji.utils.EmojiCategory;
 import com.example.daksh.emojitest.emoji.variants.VariantEmoji;
@@ -36,12 +38,12 @@ public class EmojiView extends LinearLayout implements ViewPager.OnPageChangeLis
   @ColorInt private final int themeIconColor;
   @ColorInt private final int themeAccentColor;
 
-  final ImageButton[] emojiTabs;
-  private final EmojiePagerAdapter emojiePagerAdapter;
+  final ImageButton[] categoryImageButtons;
+  private final EmojiPagerAdapter emojiPagerAdapter;
 
   @Nullable OnEmojiBackspaceClickListener onEmojiBackspaceClickListener;
 
-  private int emojiTabLastSelectedIndex = -1;
+  private int lastSelectedIndex = -1;
 
   public EmojiView(final Context context, final OnEmojiClickListener onEmojiClickListener, final
   OnEmojiLongClickListener onEmojiLongClickListener, @NonNull final RecentEmoji recentEmoji,
@@ -72,11 +74,28 @@ public class EmojiView extends LinearLayout implements ViewPager.OnPageChangeLis
     final EmojiCategory[] categories = EmojiManager.getInstance().getCategories();
     final LinearLayout emojiCategoriesTab = findViewById(R.id.emoji_categories_tab);
 
-    emojiTabs = new ImageButton[categories.length + 2]; //Recent + Backspace
+    categoryImageButtons = new ImageButton[categories.length + 2]; //Recent + Backspace
 
-    emojiTabs[0] = inflateButton(context, R.drawable.emoji_recent, emojiCategoriesTab);
+    categoryImageButtons[0] = inflateButton(context, R.drawable.emoji_recent, emojiCategoriesTab);
+    for (int i = 0; i < categories.length; i++) {
+      categoryImageButtons[i + 1] =
+          inflateButton(context, categories[i].getIcon(), emojiCategoriesTab);
+    }
+    categoryImageButtons[categoryImageButtons.length - 1] =
+        inflateButton(context, R.drawable.emoji_backspace, emojiCategoriesTab);
+
+    handleOnClicks(emojisPager);
+
+    emojiPagerAdapter =
+        new EmojiPagerAdapter(onEmojiClickListener, onEmojiLongClickListener, recentEmoji,
+            variantManager);
+
+    final int startIndex = emojiPagerAdapter.numberOfRecentEmojis() > 0 ? 0 : 1;
+    emojisPager.setCurrentItem(startIndex);
+    onPageSelected(startIndex);
   }
 
+  //Adds a image button the the Parent view
   private ImageButton inflateButton(final Context context, @DrawableRes final int icon,
       final ViewGroup parent) {
     final ImageButton button =
@@ -92,15 +111,66 @@ public class EmojiView extends LinearLayout implements ViewPager.OnPageChangeLis
     return button;
   }
 
+  @SuppressLint("ClickableViewAccessibility")
+  private void handleOnClicks(final ViewPager emojisPager) {
+    for (int i = 0; i < categoryImageButtons.length - 1; i++) {
+      categoryImageButtons[i].setOnClickListener(new EmojiTabsClickListener(emojisPager, i));
+    }
+
+    categoryImageButtons[categoryImageButtons.length - 1].setOnTouchListener(
+        new RepeatListener(INITIAL_INTERVAL, NORMAL_INTERVAL, v -> {
+          if (onEmojiBackspaceClickListener != null) {
+            onEmojiBackspaceClickListener.onEmojiBackspaceClicked(v);
+          }
+        }));
+  }
+
   @Override public void onPageScrolled(int i, float v, int i1) {
 
   }
 
   @Override public void onPageSelected(int i) {
+    if (lastSelectedIndex != i) {
+      //If selecting recentEmojiPage
+      if (i == 0) {
+        emojiPagerAdapter.invalidateRecentEmojis();
+      }
 
+      //If not recentEmojiPage and trying to go to backspaceButton
+      if (lastSelectedIndex >= 0
+          && lastSelectedIndex < categoryImageButtons.length) {
+        categoryImageButtons[lastSelectedIndex].setSelected(false);
+        categoryImageButtons[lastSelectedIndex].setColorFilter(themeIconColor,
+            PorterDuff.Mode.SRC_IN);
+      }
+
+      categoryImageButtons[i].setSelected(true);
+      categoryImageButtons[i].setColorFilter(themeIconColor, PorterDuff.Mode.SRC_IN);
+
+      lastSelectedIndex = i;
+    }
   }
 
   @Override public void onPageScrollStateChanged(int i) {
 
+  }
+
+  public void setOnEmojiBackspaceClickListener(
+      @Nullable final OnEmojiBackspaceClickListener onEmojiBackspaceClickListener) {
+    this.onEmojiBackspaceClickListener = onEmojiBackspaceClickListener;
+  }
+
+  static class EmojiTabsClickListener implements OnClickListener {
+    private final ViewPager emojisPager;
+    private final int position;
+
+    public EmojiTabsClickListener(ViewPager emojisPager, int position) {
+      this.emojisPager = emojisPager;
+      this.position = position;
+    }
+
+    @Override public void onClick(View v) {
+      emojisPager.setCurrentItem(position);
+    }
   }
 }

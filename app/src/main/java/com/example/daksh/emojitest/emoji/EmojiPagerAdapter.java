@@ -13,7 +13,7 @@ import com.example.daksh.emojitest.emoji.variants.VariantEmoji;
 /**
  * Created by daksh
  */
-public class EmojiePagerAdapter extends PagerAdapter {
+public class EmojiPagerAdapter extends PagerAdapter {
   private static final int RECENT_POSITION = 0;
 
   private final OnEmojiClickListener listener;
@@ -23,7 +23,7 @@ public class EmojiePagerAdapter extends PagerAdapter {
 
   private RecentEmojiGridView recentEmojiGridView;
 
-  EmojiePagerAdapter(final OnEmojiClickListener listener,
+  EmojiPagerAdapter(final OnEmojiClickListener listener,
       final OnEmojiLongClickListener longListener, final RecentEmoji recentEmoji,
       final VariantEmoji variantManager) {
     this.listener = listener;
