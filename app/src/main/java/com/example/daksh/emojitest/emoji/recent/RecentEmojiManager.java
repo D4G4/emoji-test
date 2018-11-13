@@ -30,13 +30,14 @@ public class RecentEmojiManager implements RecentEmoji {
     }
   }
 
-  static class EmojiList {
+  //filters emoji with same base and skinTone and returns sorted emoji based on COMPARATOR
+  static class EmojiDataList {
     static final Comparator<EmojiData> EMOJI_DATA_TIMESTAMP_COMPARATOR =
         (EmojiData lhs, EmojiData rhs) -> rhs.timeStamp.compareTo(lhs.timeStamp);
 
     @NonNull final List<EmojiData> recentEmojisList;
 
-    public EmojiList(final int size) {
+    public EmojiDataList(final int size) {
       recentEmojisList = new ArrayList<>(size);
     }
 
@@ -98,14 +99,15 @@ public class RecentEmojiManager implements RecentEmoji {
   static final int MAX_RECENTS = 40;
 
   @NonNull private final Context context;
-  @NonNull private EmojiList emojiList = new EmojiList(0);
+  @NonNull private EmojiDataList emojiDataList = new EmojiDataList(0);
 
   public RecentEmojiManager(@NonNull Context context) {
     this.context = context.getApplicationContext();
   }
 
+  //From sharedPrefs
   @NonNull @Override public Collection<Emoji> getRecentEmojis() {
-    if (emojiList.size() == 0) {
+    if (emojiDataList.size() == 0) {
       final String savedRecentEmojis = getPreferences().getString(RECENT_EMOJIS, "");
 
       if (savedRecentEmojis.length() > 0) {
@@ -120,30 +122,30 @@ public class RecentEmojiManager implements RecentEmoji {
 
             if (emoji != null && emoji.getLength() == parts[0].length()) {
               final long timeStamp = Long.parseLong(parts[1]);
-              emojiList.add(emoji, timeStamp);
+              emojiDataList.add(emoji, timeStamp);
             }
           }
         }
       } else {
-        emojiList = new EmojiList(0);
+        emojiDataList = new EmojiDataList(0);
       }
     }
-    return emojiList.getRecentEmojis();
+    return emojiDataList.getRecentEmojis();
   }
 
   @Override public void addEmoji(@NonNull Emoji emoji) {
-    emojiList.add(emoji);
+    emojiDataList.add(emoji);
   }
 
   /**
    * Save to sharedPreferences
    */
   @Override public void persist() {
-    if (emojiList.size() > 0) {
-      final StringBuilder stringBuilder = new StringBuilder(emojiList.size() * EMOJI_GUESS_SIZE);
+    if (emojiDataList.size() > 0) {
+      final StringBuilder stringBuilder = new StringBuilder(emojiDataList.size() * EMOJI_GUESS_SIZE);
 
-      for (int i = 0; i < emojiList.size(); i++) {
-        final EmojiData data = emojiList.get(i);
+      for (int i = 0; i < emojiDataList.size(); i++) {
+        final EmojiData data = emojiDataList.get(i);
         stringBuilder.append(data.emoji.getUnicode())
             .append(TIME_DELIMETER)
             .append(data.timeStamp)

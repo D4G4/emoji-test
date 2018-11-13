@@ -14,7 +14,7 @@ import com.example.daksh.emojitest.emoji.baseRequirements.EmojiManager;
 /**
  * Created by daksh
  */
-@SuppressWarnings("DanglingJavadoc") public class EmojiTextView extends AppCompatTextView {
+@SuppressWarnings("DanglingJavadoc") public class EmojiTextView extends AppCompatTextView implements EmojiViewInterface{
 
   private float emojiSize;
 
@@ -30,7 +30,7 @@ import com.example.daksh.emojitest.emoji.baseRequirements.EmojiManager;
       EmojiManager.getInstance().verifyInstall();
     }
     final Paint.FontMetrics fontMetrics = getPaint().getFontMetrics();
-    final float defaultEmojiSize = fontMetrics.descent - fontMetrics.ascent;
+    final float defaultEmojiSize = fontMetrics.descent - fontMetrics.ascent; //TODO: Wouldn't it be negative?
 
     if (attrs == null) {
       emojiSize = defaultEmojiSize;
@@ -61,6 +61,7 @@ import com.example.daksh.emojitest.emoji.baseRequirements.EmojiManager;
    * sets the emoji size in pixels and automatically invalidates the text nd renders it with the new
    * size
    */
+  @Override
   public final void setEmojiSize(@Px final int pixels) {
     setEmojiSize(pixels, true);
   }
@@ -69,6 +70,7 @@ import com.example.daksh.emojitest.emoji.baseRequirements.EmojiManager;
    * @param pixels sets the emoji size
    * @param shouldInvalidate invalidates the text and renders it with the new size
    */
+  @Override
   public final void setEmojiSize(@Px final int pixels, final boolean shouldInvalidate) {
     emojiSize = pixels;
 
@@ -77,10 +79,12 @@ import com.example.daksh.emojitest.emoji.baseRequirements.EmojiManager;
     }
   }
 
+  @Override
   public final void setEmojiSizeRes(@DimenRes final int res) {
     setEmojiSizeRes(res, true);
   }
 
+  @Override
   public final void setEmojiSizeRes(@DimenRes final int res, final boolean shouldInvalidate) {
     setEmojiSize(getResources().getDimensionPixelSize(res), shouldInvalidate);
   }

@@ -14,7 +14,8 @@ import com.example.daksh.emojitest.emoji.baseRequirements.EmojiManager;
 /**
  * Created by dennis
  */
-public class EmojiEditText extends AppCompatEditText implements EmojiEditTextInterface {
+public class
+EmojiEditText extends AppCompatEditText implements EmojiEditTextInterface {
 
   private float emojiSize;
 
@@ -22,6 +23,7 @@ public class EmojiEditText extends AppCompatEditText implements EmojiEditTextInt
     this(context, null);
   }
 
+  // Figuring size of emoji
   public EmojiEditText(Context context, AttributeSet attrs) {
     super(context, attrs);
 
@@ -47,6 +49,7 @@ public class EmojiEditText extends AppCompatEditText implements EmojiEditTextInt
     }
   }
 
+  //Replace text with emoji (if any)
   @Override @CallSuper
   protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
     final Paint.FontMetrics fontMetrics = getPaint().getFontMetrics();
@@ -56,13 +59,17 @@ public class EmojiEditText extends AppCompatEditText implements EmojiEditTextInt
   }
 
   //region EmojiEditTextInterface
+
+  /**
+   * When user hits the backspace, make sure we remove the whole String representing unicode
+   */
   @Override public void backspace() {
     //TODO: ENDCALL???
     final KeyEvent event =
         new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL, 0, 0, 0, 0,
             KeyEvent.KEYCODE_ENDCALL);
 
-    dispatchKeyEvent(event); //TODO: Really necessary?
+    dispatchKeyEvent(event);
   }
 
   @Override public void input(Emoji emoji) {

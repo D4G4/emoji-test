@@ -183,7 +183,7 @@ public class EmojiManager {
         DEFAULT_EMOJI_REPLACER);
   }
 
-  EmojiCategory[] getCategories() {
+  public EmojiCategory[] getCategories() {
     verifyInstall();
     return categories;
   }
