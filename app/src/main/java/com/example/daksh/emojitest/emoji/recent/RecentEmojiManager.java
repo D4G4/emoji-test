@@ -102,12 +102,14 @@ public class RecentEmojiManager implements RecentEmoji {
   @NonNull private EmojiDataList emojiDataList = new EmojiDataList(0);
 
   public RecentEmojiManager(@NonNull Context context) {
+    Log.e("DAKSH", "RecentemojiManager");
     this.context = context.getApplicationContext();
   }
 
   //From sharedPrefs
   @NonNull @Override public Collection<Emoji> getRecentEmojis() {
     if (emojiDataList.size() == 0) {
+      Log.e("DAKSH", "emojiDataList size = 0");
       final String savedRecentEmojis = getPreferences().getString(RECENT_EMOJIS, "");
 
       if (savedRecentEmojis.length() > 0) {
@@ -142,7 +144,8 @@ public class RecentEmojiManager implements RecentEmoji {
    */
   @Override public void persist() {
     if (emojiDataList.size() > 0) {
-      final StringBuilder stringBuilder = new StringBuilder(emojiDataList.size() * EMOJI_GUESS_SIZE);
+      final StringBuilder stringBuilder =
+          new StringBuilder(emojiDataList.size() * EMOJI_GUESS_SIZE);
 
       for (int i = 0; i < emojiDataList.size(); i++) {
         final EmojiData data = emojiDataList.get(i);

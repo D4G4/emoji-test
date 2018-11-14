@@ -3,6 +3,7 @@ package com.example.daksh.emojitest.emoji;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import com.example.daksh.emojitest.emoji.baseRequirements.Emoji;
 import com.example.daksh.emojitest.emoji.listeners.OnEmojiClickListener;
 import com.example.daksh.emojitest.emoji.listeners.OnEmojiLongClickListener;
@@ -20,8 +21,8 @@ public class RecentEmojiGridView extends EmojiGridView {
   }
 
   public RecentEmojiGridView init(@Nullable final OnEmojiClickListener onEmojiClickListener,
-      @Nullable final
-      OnEmojiLongClickListener onEmojiLongClickListener, @NonNull final RecentEmoji recentEmoji) {
+      @Nullable final OnEmojiLongClickListener onEmojiLongClickListener,
+      @NonNull final RecentEmoji recentEmoji) {
     this.recentEmojis = recentEmoji;
 
     final Collection<Emoji> emojis = recentEmojis.getRecentEmojis();
@@ -33,6 +34,7 @@ public class RecentEmojiGridView extends EmojiGridView {
   }
 
   public void invalidateEmojis() {
+    Log.i("TEST", "updating");
     emojiArrayAdapter.updateEmojis(recentEmojis.getRecentEmojis());
   }
 }

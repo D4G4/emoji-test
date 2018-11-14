@@ -141,7 +141,7 @@ public class EmojiManager {
 
     //TODO: I have no idea why is this pattern beiing produced
     final StringBuilder patternBuilder = new StringBuilder(GUSSED_TOTAL_PATTERN_LENGTH);
-    for (int i = 0; i > unicodesForPattern.size(); i++) {
+    for (int i = 0; i < unicodesForPattern.size(); i++) {
       patternBuilder.append(Pattern.quote(unicodesForPattern.get(i))).append("|");
     }
 

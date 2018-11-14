@@ -10,6 +10,7 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -27,6 +28,7 @@ import com.example.daksh.emojitest.emoji.listeners.OnSoftKeyboardCloseListener;
 import com.example.daksh.emojitest.emoji.listeners.OnSoftKeyboardOpenListener;
 import com.example.daksh.emojitest.emoji.recent.RecentEmoji;
 import com.example.daksh.emojitest.emoji.recent.RecentEmojiManager;
+import com.example.daksh.emojitest.emoji.ui.EmojiEditText;
 import com.example.daksh.emojitest.emoji.ui.EmojiEditTextInterface;
 import com.example.daksh.emojitest.emoji.ui.EmojiImageView;
 import com.example.daksh.emojitest.emoji.utils.Utils;
@@ -102,17 +104,19 @@ public class EmojiPopup {
       };
 
   public EmojiPopup(View rootView,
-      @NonNull RecentEmoji recentEmoji,
-      @NonNull VariantEmoji variantEmoji,
+      @NonNull RecentEmoji recent,
+      @NonNull VariantEmoji variant,
       EmojiEditTextInterface editTextInterface, @ColorInt final int backgroundColor,
       @ColorInt final int iconColor, @ColorInt final int dividerColor) {
     this.context = Utils.asActivity(rootView.getContext());
     this.rootView = rootView.getRootView();
-    this.recentEmoji = recentEmoji != null ? recentEmoji : new RecentEmojiManager(context);
-    this.variantEmoji = variantEmoji != null ? variantEmoji : new VariantEmojiManager(context);
+    this.recentEmoji = recent != null ? recent : new RecentEmojiManager(context);
+    this.variantEmoji = variant != null ? variant : new VariantEmojiManager(context);
     this.editTextInterface = editTextInterface;
 
     popupWindow = new PopupWindow(context);
+
+    //Log.e("DAKSH", "RecentEMoji is null? " + (recentEmoji == null));
 
     final OnEmojiLongClickListener longClickListener = new OnEmojiLongClickListener() {
       @Override
@@ -140,7 +144,7 @@ public class EmojiPopup {
     variantPopup = new EmojiVariantPopup(this.rootView, clickListener);
 
     final EmojiView emojiView =
-        new EmojiView(context, clickListener, longClickListener, recentEmoji, variantEmoji,
+        new EmojiView(context, clickListener, longClickListener, this.recentEmoji, this.variantEmoji,
             backgroundColor, iconColor, dividerColor);
 
     emojiView.setOnEmojiBackspaceClickListener((v) -> {
@@ -226,7 +230,7 @@ public class EmojiPopup {
     }
   }
 
-  void dismiss() {
+  public void dismiss() {
     popupWindow.dismiss();
     variantPopup.dismiss();
     recentEmoji.persist();
@@ -331,6 +335,10 @@ public class EmojiPopup {
       return this;
     }
 
+    /**
+     * EditText is needed so whenever we tap the emoji, it will be inserted into the {@link
+     * EmojiEditText}
+     */
     @CheckResult public EmojiPopup build(@NonNull final EmojiEditTextInterface editTextInterface) {
       EmojiManager.getInstance().verifyInstall();
       Utils.checkNotNull(editTextInterface, "EditText can't be null");

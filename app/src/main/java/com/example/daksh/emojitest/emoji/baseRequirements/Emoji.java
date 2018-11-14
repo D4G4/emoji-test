@@ -109,9 +109,6 @@ public class Emoji implements Serializable {
         && this.variants.equals(comparableEmoji.variants);
   }
 
-  /**
-   * TODO: Why?
-   */
   @Override public int hashCode() {
     int result = unicode.hashCode();
     result = 31 * result + resource;

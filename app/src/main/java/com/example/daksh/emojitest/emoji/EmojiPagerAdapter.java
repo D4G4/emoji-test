@@ -2,6 +2,7 @@ package com.example.daksh.emojitest.emoji;
 
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import com.example.daksh.emojitest.emoji.baseRequirements.EmojiManager;
@@ -34,6 +35,7 @@ public class EmojiPagerAdapter extends PagerAdapter {
   }
 
   @Override public int getCount() {
+    //Log.i("DAKSH", "getting count " + EmojiManager.getInstance().getCategories().length + 1);
     return EmojiManager.getInstance().getCategories().length + 1; //+1 for recent emojis
   }
 
@@ -43,10 +45,12 @@ public class EmojiPagerAdapter extends PagerAdapter {
     if (position == RECENT_POSITION) {
       newView =
           new RecentEmojiGridView(pager.getContext()).init(listener, longListener, recentEmoji);
+      recentEmojiGridView = (RecentEmojiGridView) newView;
     } else {
       newView = new EmojiGridView(pager.getContext()).init(listener, longListener,
           EmojiManager.getInstance().getCategories()[position - 1], variantManager);
     }
+    pager.addView(newView);
     return newView;
   }
 
@@ -68,6 +72,7 @@ public class EmojiPagerAdapter extends PagerAdapter {
   }
 
   public void invalidateRecentEmojis() {
+    Log.i("TEST", "invalidating recent emojis");
     if (recentEmojiGridView != null) {
       recentEmojiGridView.invalidateEmojis();
     }

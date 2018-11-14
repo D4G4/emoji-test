@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.content.res.AppCompatResources;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,7 +51,7 @@ public class EmojiView extends LinearLayout implements ViewPager.OnPageChangeLis
       @NonNull final VariantEmoji variantManager, @ColorInt final int backgroundColor,
       @ColorInt final int iconColor, @ColorInt final int dividerColor) {
     super(context);
-
+    Log.e("DAKSH", "EmojiView ke ander");
     View.inflate(context, R.layout.emoji_view, this);
 
     setOrientation(VERTICAL);
@@ -89,6 +90,7 @@ public class EmojiView extends LinearLayout implements ViewPager.OnPageChangeLis
     emojiPagerAdapter =
         new EmojiPagerAdapter(onEmojiClickListener, onEmojiLongClickListener, recentEmoji,
             variantManager);
+    emojisPager.setAdapter(emojiPagerAdapter);
 
     final int startIndex = emojiPagerAdapter.numberOfRecentEmojis() > 0 ? 0 : 1;
     emojisPager.setCurrentItem(startIndex);
@@ -145,7 +147,7 @@ public class EmojiView extends LinearLayout implements ViewPager.OnPageChangeLis
       }
 
       categoryImageButtons[i].setSelected(true);
-      categoryImageButtons[i].setColorFilter(themeIconColor, PorterDuff.Mode.SRC_IN);
+      categoryImageButtons[i].setColorFilter(themeAccentColor, PorterDuff.Mode.SRC_IN);
 
       lastSelectedIndex = i;
     }

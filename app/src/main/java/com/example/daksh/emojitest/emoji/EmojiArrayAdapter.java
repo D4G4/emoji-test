@@ -3,6 +3,7 @@ package com.example.daksh.emojitest.emoji;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,7 @@ public class EmojiArrayAdapter extends ArrayAdapter<Emoji> {
   @NonNull @Override
   public View getView(int position, @Nullable View convertView,
       @NonNull ViewGroup parent) {
+    Log.i("DAKSH", "------------------------------------------ getView");
     EmojiImageView image = (EmojiImageView) convertView;
 
     final Context context = getContext();
@@ -62,5 +64,10 @@ public class EmojiArrayAdapter extends ArrayAdapter<Emoji> {
     clear();
     addAll(emojis);
     notifyDataSetChanged();
+    Log.i("TEST", "Calling notify dataset changed");
+  }
+
+  @Override public int getCount() {
+    return super.getCount();
   }
 }

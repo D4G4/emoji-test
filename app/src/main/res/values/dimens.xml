@@ -2,4 +2,8 @@
 <resources>
   <dimen name="emoji_grid_view_column_width">36dp</dimen>
   <dimen name="emoji_grid_view_spacing">6dp</dimen>
+
+  <dimen name="emoji_size_single_emoji">60sp</dimen>
+  <dimen name="emoji_size_only_emoji">40sp</dimen>
+  <dimen name="emoji_size_default">20sp</dimen>
 </resources>
